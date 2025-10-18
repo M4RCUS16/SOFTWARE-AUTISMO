@@ -1,0 +1,55 @@
+﻿{% extends "admin/base_site.html" %}
+{% load i18n %}
+
+{% block content %}
+<div class="tea-dashboard">
+  <section class="tea-dashboard__hero">
+    <h2>{% translate "Bem-vinda ao painel clínico" %}</h2>
+    <p>{% translate "Acesse rapidamente os módulos para registrar avaliações, sessões e relatórios psicopedagógicos." %}</p>
+  </section>
+
+  <section class="tea-quick-links">
+    <article class="tea-quick-card">
+      <h3>{% translate "Registrar avaliação" %}</h3>
+      <p>{% translate "Atualize o histórico psicométrico aplicando escalas padronizadas." %}</p>
+    </article>
+    <article class="tea-quick-card">
+      <h3>{% translate "Planejar PTS" %}</h3>
+      <p>{% translate "Defina objetivos terapêuticos personalizados e acompanhe metas." %}</p>
+    </article>
+    <article class="tea-quick-card">
+      <h3>{% translate "Documentar sessão" %}</h3>
+      <p>{% translate "Registre intervenções, observações e indicadores de progresso." %}</p>
+    </article>
+  </section>
+
+  <section class="tea-dashboard__grid">
+    {% for app in app_list %}
+      <article class="tea-app-card" id="app-{{ app.app_label }}">
+        <header class="tea-app-card__title">{{ app.name }}</header>
+        <ul class="tea-model-list">
+          {% for model in app.models %}
+            <li class="tea-model-item">
+              <span class="tea-model-name">{{ model.name }}</span>
+              <span class="tea-model-actions">
+                {% if model.admin_url %}
+                  <a href="{{ model.admin_url }}">{% translate "Ver" %}</a>
+                {% endif %}
+                {% if model.add_url %}
+                  <a href="{{ model.add_url }}">{% translate "Novo" %}</a>
+                {% endif %}
+              </span>
+            </li>
+          {% empty %}
+            <li class="tea-model-item">
+              <span class="tea-model-name">{% translate "Nenhum módulo disponível." %}</span>
+            </li>
+          {% endfor %}
+        </ul>
+      </article>
+    {% empty %}
+      <p>{% translate "Nenhuma aplicação registrada." %}</p>
+    {% endfor %}
+  </section>
+</div>
+{% endblock %}

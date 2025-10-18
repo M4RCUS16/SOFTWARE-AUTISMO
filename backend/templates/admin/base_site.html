@@ -1,0 +1,26 @@
+﻿{% extends "admin/base.html" %}
+{% load static %}
+
+{% block extrahead %}
+  {{ block.super }}
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+{% endblock %}
+
+{% block extrastyle %}
+  {{ block.super }}
+  <link rel="stylesheet" type="text/css" href="{% static 'admin/custom.css' %}">
+{% endblock %}
+
+{% block branding %}
+  <div class="tea-branding">
+    <div class="tea-branding__badge">TEA<span>Care</span></div>
+    <div class="tea-branding__copy">
+      <h1>Plataforma especializada em diagnóstico e intervenção TEA</h1>
+      <p>Centralize avaliações, PTS e registros de evolução com segurança clínica.</p>
+    </div>
+  </div>
+{% endblock %}
+
+{% block nav-global %}{% endblock %}

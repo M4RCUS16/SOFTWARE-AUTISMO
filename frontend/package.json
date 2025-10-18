@@ -1,0 +1,53 @@
+{
+  "name": "frontend",
+  "version": "1.0.0",
+  "description": "",
+  "main": "src/index.jsx",
+  "scripts": {
+    "start": "cross-env NODE_ENV=development webpack serve --config webpack.config.js --progress --color",
+    "build": "cross-env NODE_ENV=production webpack --config webpack.config.js",
+    "lint": "echo \"Add linting if desired\""
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "axios": "^1.7.9",
+    "date-fns": "^3.6.0",
+    "lodash.get": "^4.4.2",
+    "lucide-react": "^0.469.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "react-router-dom": "^6.29.0",
+    "recharts": "^2.12.7",
+    "yup": "^1.4.0"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.26.0",
+    "@babel/preset-env": "^7.26.0",
+    "@babel/preset-react": "^7.25.9",
+    "@svgr/webpack": "^6.5.1",
+    "autoprefixer": "^10.4.20",
+    "babel-loader": "^8.4.1",
+    "cross-env": "^7.0.3",
+    "css-loader": "^6.11.0",
+    "cypress": "^9.7.0",
+    "html-webpack-plugin": "^5.6.3",
+    "mini-css-extract-plugin": "^2.9.1",
+    "postcss": "^8.4.49",
+    "postcss-loader": "^4.3.0",
+    "style-loader": "^3.3.4",
+    "tailwindcss": "^2.2.19",
+    "webpack": "^5.96.1",
+    "webpack-cli": "^4.10.0",
+    "webpack-dev-server": "^4.15.2"
+  },
+  "browserslist": [
+    ">0.5%",
+    "last 2 versions",
+    "not dead"
+  ],
+  "engines": {
+    "node": ">=12.22.0"
+  }
+}
