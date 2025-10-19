@@ -20,12 +20,17 @@ export function DashboardPage() {
   useEffect(() => {
     async function load() {
       try {
-        const [metricsResponse, patientsResponse] = await Promise.all([
-          api.get("/dashboard/"),
-          api.get("/patients/")
-        ]);
+        const [metricsResponse, patientsResponse] = await Promise.all([api.get("/dashboard/"), api.get("/patients/")]);
         setMetrics(metricsResponse.data);
-        setPatients(patientsResponse.data.results || patientsResponse.data);
+
+        const patientPayload = patientsResponse.data;
+        if (Array.isArray(patientPayload)) {
+          setPatients(patientPayload);
+        } else if (Array.isArray(patientPayload?.results)) {
+          setPatients(patientPayload.results);
+        } else {
+          setPatients([]);
+        }
       } catch (error) {
         console.error("Erro ao carregar painel", error);
       } finally {
@@ -36,13 +41,13 @@ export function DashboardPage() {
   }, []);
 
   const adherenceChart = useMemo(() => {
-    if (!metrics?.progress_series?.length) {
+    if (!metrics?.progress_series || !Array.isArray(metrics.progress_series) || !metrics.progress_series.length) {
       return [];
     }
     return metrics.progress_series.map((item) => ({
       name: (item.patient && item.patient.split(" ")[0]) || item.patient || "",
-      progresso: item.progress,
-      adesão: item.adherence
+      progresso: Number(item.progress) || 0,
+      adesao: Number(item.adherence) || 0
     }));
   }, [metrics]);
 
@@ -55,34 +60,34 @@ export function DashboardPage() {
   }
 
   if (!metrics) {
-    return <p className="text-red-500">Não foi possivel carregar o painel de indicadores.</p>;
+    return <p className="text-red-500">Não foi possível carregar o painel de indicadores.</p>;
   }
 
   const cards = [
     {
       key: "total_active_patients",
       label: "Pacientes ativos",
-      value: metrics.total_active_patients
+      value: metrics.total_active_patients ?? 0
     },
     {
       key: "scales_applied_this_month",
-      label: "Escalas aplicadas no mes",
-      value: metrics.scales_applied_this_month
+      label: "Escalas aplicadas no mês",
+      value: metrics.scales_applied_this_month ?? 0
     },
     {
       key: "average_progress",
-      label: "Evolução media (%)",
-      value: `${((Number(metrics?.average_progress) || 0).toFixed(1))}%`
+      label: "Evolução média (%)",
+      value: `${(Number(metrics.average_progress) || 0).toFixed(1)}%`
     },
     {
       key: "pending_revaluations",
       label: "Reavaliações pendentes",
-      value: metrics.pending_revaluations
+      value: metrics.pending_revaluations ?? 0
     },
     {
       key: "therapeutic_adherence_rate",
       label: "Adesão terapêutica",
-      value: `${((Number(metrics?.therapeutic_adherence_rate) || 0).toFixed(1))}%`
+      value: `${(Number(metrics.therapeutic_adherence_rate) || 0).toFixed(1)}%`
     }
   ];
 
@@ -122,7 +127,7 @@ export function DashboardPage() {
                     <stop offset="5%" stopColor="#4FA3D8" stopOpacity={0.8} />
                     <stop offset="95%" stopColor="#4FA3D8" stopOpacity={0} />
                   </linearGradient>
-                  <linearGradient id="colorAdesão" x1="0" y1="0" x2="0" y2="1">
+                  <linearGradient id="colorAdesao" x1="0" y1="0" x2="0" y2="1">
                     <stop offset="5%" stopColor="#34D399" stopOpacity={0.8} />
                     <stop offset="95%" stopColor="#34D399" stopOpacity={0} />
                   </linearGradient>
@@ -133,7 +138,7 @@ export function DashboardPage() {
                 <Tooltip formatter={(value) => `${value}%`} />
                 <Legend />
                 <Area type="monotone" dataKey="progresso" stroke="#2563EB" fillOpacity={1} fill="url(#colorProgresso)" />
-                <Area type="monotone" dataKey="adesão" stroke="#059669" fillOpacity={1} fill="url(#colorAdesão)" />
+                <Area type="monotone" dataKey="adesao" stroke="#059669" fillOpacity={1} fill="url(#colorAdesao)" />
               </AreaChart>
             </ResponsiveContainer>
           </div>
@@ -141,16 +146,20 @@ export function DashboardPage() {
         <article className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
           <h3 className="text-lg font-semibold text-slate-800">Alertas recentes</h3>
           <ul className="mt-4 space-y-3">
-            {patients.slice(0, 5).map((patient) => (
-              <li key={patient.id} className="rounded-lg border border-slate-100 p-3">
-                <p className="font-semibold text-slate-700">{patient.full_name}</p>
-                <p className="text-xs text-slate-500">Revisao PTS em {new Date().toLocaleDateString("pt-BR")}</p>
-              </li>
-            ))}
-            {!patients.length && <p className="text-sm text-slate-500">Cadastre pacientes para acompanhar alertas clínicos.</p>}
+            {Array.isArray(patients) &&
+              patients.slice(0, 5).map((patient) => (
+                <li key={patient.id ?? patient?.pk ?? patient?.uuid ?? Math.random()} className="rounded-lg border border-slate-100 p-3">
+                  <p className="font-semibold text-slate-700">{patient.full_name || "Paciente sem nome"}</p>
+                  <p className="text-xs text-slate-500">Revisão PTS em {new Date().toLocaleDateString("pt-BR")}</p>
+                </li>
+              ))}
+            {(!Array.isArray(patients) || patients.length === 0) && (
+              <p className="text-sm text-slate-500">Cadastre pacientes para acompanhar alertas clínicos.</p>
+            )}
           </ul>
         </article>
       </section>
     </div>
   );
 }
+
