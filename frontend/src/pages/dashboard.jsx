@@ -72,7 +72,7 @@ export function DashboardPage() {
     {
       key: "average_progress",
       label: "Evolução media (%)",
-      value: `${metrics.average_progress.toFixed(1)}%`
+      value: `${((Number(metrics?.average_progress) || 0).toFixed(1))}%`
     },
     {
       key: "pending_revaluations",
@@ -82,7 +82,7 @@ export function DashboardPage() {
     {
       key: "therapeutic_adherence_rate",
       label: "Adesão terapêutica",
-      value: `${metrics.therapeutic_adherence_rate.toFixed(1)}%`
+      value: `${((Number(metrics?.therapeutic_adherence_rate) || 0).toFixed(1))}%`
     }
   ];
 
