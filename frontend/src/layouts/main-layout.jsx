@@ -64,7 +64,9 @@ export function MainLayout() {
             <span className="text-lg font-semibold text-primary">NeuroAtlas TEA</span>
           </div>
           <div className="hidden lg:block">
-            <h1 className="text-xl font-semibold text-slate-800">Bem-vinda, {profile?.full_name.split(" ")[0]}</h1>
+            <h1 className="text-xl font-semibold text-slate-800">
+              Bem-vinda, {profile?.full_name?.split(" ")[0] || profile?.full_name || "Profissional"}
+            </h1>
             <p className="text-sm text-slate-500">
               Profissional {profile?.profession === "psychologist" ? "Psicóloga" : "Psicopedagoga"}
             </p>

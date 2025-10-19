@@ -40,7 +40,7 @@ export function DashboardPage() {
       return [];
     }
     return metrics.progress_series.map((item) => ({
-      name: item.patient.split(" ")[0],
+      name: (item.patient && item.patient.split(" ")[0]) || item.patient || "",
       progresso: item.progress,
       adesão: item.adherence
     }));
