@@ -2,9 +2,21 @@ import axios from "axios";
 
 import { tokenStorage } from "@/utils/token-storage";
 
+const inferBrowserOrigin = () => {
+  if (typeof window === "undefined" || !window.location) {
+    return null;
+  }
+  const { origin } = window.location;
+  if (!origin || origin === "null") {
+    return null;
+  }
+  return `${origin.replace(/\/$/, "")}/api`;
+};
+
 const API_BASE_URL =
   (typeof window !== "undefined" && window.API_BASE_URL) ||
   (typeof process !== "undefined" && process.env && process.env.API_BASE_URL) ||
+  inferBrowserOrigin() ||
   "http://localhost:8000/api";
 
 const api = axios.create({
