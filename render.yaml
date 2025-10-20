@@ -2,16 +2,11 @@ services:
   - type: web
     name: sistema-chamados
     env: python
+    rootDir: backend
     buildCommand: |
-      cd frontend
-      npm install
-      npm run build
-      cd ..
-      pip install -r backend/requirements.txt
-      cd backend
+      pip install -r requirements.txt
       python manage.py collectstatic --noinput
-
-    startCommand: bash start.sh
+    startCommand: gunicorn core.wsgi:application
 
     envVars:
       - key: DEBUG
