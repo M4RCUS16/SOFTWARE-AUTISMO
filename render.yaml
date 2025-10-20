@@ -23,7 +23,7 @@ services:
 
     # O Gunicorn agora sabe o caminho completo do módulo
     startCommand: gunicorn backend.core.wsgi:application
-
+    
     envVars:
       - key: DEBUG
         value: False
