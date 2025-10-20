@@ -12,7 +12,7 @@ services:
       cd backend
       python manage.py collectstatic --noinput
 
-    startCommand: gunicorn backend.core.wsgi:application --chdir backend
+    startCommand: cd backend && gunicorn core.wsgi:application
 
     envVars:
       - key: DEBUG
