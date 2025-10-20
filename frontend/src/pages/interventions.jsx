@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { ActivitySquare, CalendarPlus } from "lucide-react";
 
 import api from "@/services/api";
+import { extractArray, ensureArray } from "@/utils/data-helpers";
 
 const sessionTypes = [
   { value: "psychological", label: "Sessao Psicologica" },
@@ -27,7 +28,7 @@ export function InterventionsPage() {
   useEffect(() => {
     async function loadPatients() {
       const { data } = await api.get("/patients/");
-      const list = data.results || data;
+      const list = extractArray(data);
       setPatients(list);
       if (list.length) {
         setSelectedPatient(String(list[0].id));
@@ -40,7 +41,7 @@ export function InterventionsPage() {
     async function loadSessions() {
       if (!selectedPatient) return;
       const { data } = await api.get(`/patients/${selectedPatient}/sessions/`);
-      setSessions(data.results || data);
+      setSessions(extractArray(data));
     }
     loadSessions();
   }, [selectedPatient]);
@@ -59,7 +60,7 @@ export function InterventionsPage() {
         progress_scales: { progress: Number(form.progress_index) || 0 }
       };
       const { data } = await api.post(`/patients/${selectedPatient}/sessions/`, payload);
-      setSessions((prev) => [data, ...prev]);
+      setSessions((prev) => [data, ...ensureArray(prev)]);
       setForm({
         session_type: "psychological",
         session_date: "",
@@ -93,7 +94,7 @@ export function InterventionsPage() {
               value={selectedPatient}
               onChange={(event) => setSelectedPatient(event.target.value)}
             >
-              {patients.map((patient) => (
+              {ensureArray(patients).map((patient) => (
                 <option key={patient.id} value={patient.id}>
                   {patient.full_name}
                 </option>
