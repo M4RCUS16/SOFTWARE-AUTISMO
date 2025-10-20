@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { Plus, Search } from "lucide-react";
 
 import api from "@/services/api";
+import { extractArray, ensureArray } from "@/utils/data-helpers";
 
 const initialForm = {
   full_name: "",
@@ -53,7 +54,7 @@ export function PatientsPage() {
     async function load() {
       try {
         const { data } = await api.get("/patients/");
-        setPatients(data.results || data);
+        setPatients(extractArray(data));
       } catch (error) {
         console.error("Erro ao carregar pacientes", error);
       } finally {
@@ -63,7 +64,7 @@ export function PatientsPage() {
     load();
   }, []);
 
-  const filteredPatients = patients
+  const filteredPatients = ensureArray(patients)
     .filter((patient) => patient.full_name.toLowerCase().includes(search.toLowerCase()))
     .sort((a, b) => a.full_name.localeCompare(b.full_name));
 
@@ -111,7 +112,7 @@ export function PatientsPage() {
         payload.append("school_history_file", schoolHistoryFile);
       }
       const { data } = await api.post("/patients/", payload);
-      setPatients((prev) => [data, ...prev]);
+      setPatients((prev) => [data, ...ensureArray(prev)]);
       handleCloseModal();
     } catch (error) {
       console.error("Erro ao cadastrar paciente", error);

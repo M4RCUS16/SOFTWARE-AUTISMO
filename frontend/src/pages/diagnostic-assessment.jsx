@@ -3,6 +3,7 @@ import { Download, FileCheck, Loader2 } from "lucide-react";
 import { format } from "date-fns";
 
 import api from "@/services/api";
+import { extractArray, ensureArray } from "@/utils/data-helpers";
 
 const SCORE_OPTIONS = [
   { value: 1, label: "Sim" },
@@ -11,16 +12,14 @@ const SCORE_OPTIONS = [
 
 export function DiagnosticAssessmentPage() {
   const [questionAxes, setQuestionAxes] = useState([]);
-  const flatQuestions = useMemo(
-    () =>
-      questionAxes.flatMap((axis) =>
-        (axis.questions || []).map((question) => ({
-          ...question,
-          axis: axis.label || axis.title || axis.id
-        }))
-      ),
-    [questionAxes]
-  );
+  const flatQuestions = useMemo(() => {
+    return ensureArray(questionAxes).flatMap((axis) =>
+      ensureArray(axis?.questions).map((question) => ({
+        ...question,
+        axis: axis?.label || axis?.title || axis?.id
+      }))
+    );
+  }, [questionAxes]);
   const emptyResponses = useMemo(() => {
     return Object.fromEntries(flatQuestions.map((question) => [question.id, { score: null, observation: "" }]));
   }, [flatQuestions]);
@@ -37,10 +36,11 @@ export function DiagnosticAssessmentPage() {
 
   useEffect(() => {
     async function loadPatients() {
-      try {
-        const { data } = await api.get("/patients/");
-        const list = Array.isArray(data) ? data : data.results;
-        setPatients(list || []);
+        try {
+          const { data } = await api.get("/patients/");
+          const patientList = extractArray(data);
+          setPatients(patientList);
+          setSelectedPatient((patientList[0] && String(patientList[0].id)) || "");
       } catch (err) {
         console.error(err);
       } finally {
@@ -52,9 +52,9 @@ export function DiagnosticAssessmentPage() {
 
   useEffect(() => {
     async function loadQuestions() {
-      try {
-        const { data } = await api.get("/assessment/diagnostic/questions/");
-        setQuestionAxes(Array.isArray(data) ? data : []);
+        try {
+          const { data } = await api.get("/assessment/diagnostic/questions/");
+          setQuestionAxes(extractArray(data));
       } catch (err) {
         console.error(err);
         setError("Não foi possível carregar as questões do M-CHAT.");
@@ -212,7 +212,7 @@ export function DiagnosticAssessmentPage() {
                 required
               >
                 <option value="">Selecione um paciente</option>
-                {patients.map((patient) => (
+                {ensureArray(patients).map((patient) => (
                   <option key={patient.id} value={patient.id}>
                     {patient.full_name}
                   </option>
@@ -487,4 +487,7 @@ export function DiagnosticAssessmentPage() {
     </div>
   );
 }
+
+
+
 

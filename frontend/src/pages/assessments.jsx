@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { FilePlus2 } from "lucide-react";
 
 import api from "@/services/api";
+import { extractArray, ensureArray } from "@/utils/data-helpers";
 
 const scales = [
   { value: "MCHAT", label: "M-CHAT" },
@@ -21,7 +22,7 @@ export function AssessmentsPage() {
   useEffect(() => {
     async function loadPatients() {
       const { data } = await api.get("/patients/");
-      const result = data.results || data;
+      const result = extractArray(data);
       setPatients(result);
       if (result.length) {
         setSelectedPatient(String(result[0].id));
@@ -36,7 +37,7 @@ export function AssessmentsPage() {
       setLoading(true);
       try {
         const { data } = await api.get(`/patients/${selectedPatient}/assessments/`);
-        setAssessments(data.results || data);
+        setAssessments(extractArray(data));
       } catch (error) {
         console.error("Erro ao carregar avaliações", error);
       } finally {
@@ -52,7 +53,7 @@ export function AssessmentsPage() {
     try {
       const payload = { ...form, score_total: form.score_total ? parseFloat(form.score_total) : null };
       const { data } = await api.post(`/patients/${selectedPatient}/assessments/`, payload);
-      setAssessments((prev) => [data, ...prev]);
+      setAssessments((prev) => [data, ...ensureArray(prev)]);
       setForm({ scale: "MCHAT", application_date: "", score_total: "", interpretation: "" });
     } catch (error) {
       console.error("Erro ao registrar avaliação", error);
@@ -75,7 +76,7 @@ export function AssessmentsPage() {
               value={selectedPatient}
               onChange={(event) => setSelectedPatient(event.target.value)}
             >
-              {patients.map((patient) => (
+              {ensureArray(patients).map((patient) => (
                 <option key={patient.id} value={patient.id}>
                   {patient.full_name}
                 </option>
@@ -107,7 +108,7 @@ export function AssessmentsPage() {
             />
           </div>
           <div>
-            <label className="text-xs font-semibold uppercase text-slate-500">Pontuacao</label>
+            <label className="text-xs font-semibold uppercase text-slate-500">Pontuação</label>
             <input
               type="number"
               step="0.01"
@@ -117,7 +118,7 @@ export function AssessmentsPage() {
             />
           </div>
           <div className="md:col-span-4">
-            <label className="text-xs font-semibold uppercase text-slate-500">Interpretacao</label>
+            <label className="text-xs font-semibold uppercase text-slate-500">Interpretação</label>
             <textarea
               className="mt-1 w-full rounded-lg border border-slate-200 px-3 py-2 text-sm"
               rows={3}
@@ -132,18 +133,18 @@ export function AssessmentsPage() {
               className="inline-flex items-center gap-2 rounded-lg bg-primary px-4 py-2 text-sm font-medium text-white"
             >
               <FilePlus2 className="h-4 w-4" />
-              Registrar avaliação
+              Registrar Avaliação
             </button>
           </div>
         </form>
       </section>
       <section className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
         <header className="mb-4 flex items-center justify-between">
-          <h3 className="text-lg font-semibold text-slate-800">Historico de avaliações</h3>
+          <h3 className="text-lg font-semibold text-slate-800">Histórico de Avaliações</h3>
           <p className="text-xs text-slate-500">Atualizado automaticamente pelos protocolos aplicados</p>
         </header>
         {loading ? (
-          <p className="text-sm text-slate-500">Carregando historico...</p>
+          <p className="text-sm text-slate-500">Carregando histórico...</p>
         ) : (
           <div className="space-y-3">
             {assessments.map((assessment) => (
