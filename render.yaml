@@ -1,7 +1,3 @@
-# ============================================
-# render.yaml - Deploy completo Django + React
-# ============================================
-
 services:
   - type: web
     name: sistema-chamados
@@ -9,21 +5,15 @@ services:
     rootDir: backend
 
     buildCommand: |
-      # Construção do frontend (React)
       cd ../frontend
       npm install
       npm run build
       cd ../backend
-
-      # Instala dependências do Django
       pip install -r requirements.txt
-
-      # Coleta arquivos estáticos
       python manage.py collectstatic --noinput
 
-    # O Gunicorn agora sabe o caminho completo do módulo
-    startCommand: gunicorn backend.core.wsgi:application
-    
+    startCommand: gunicorn core.wsgi:application
+
     envVars:
       - key: DEBUG
         value: False
@@ -35,31 +25,7 @@ services:
         fromDatabase:
           name: sistema-chamados-db
           property: connectionString
-      - key: CORS_ALLOWED_ORIGINS
-        value: "https://sistema-chamados.onrender.com"
-      - key: CSRF_TRUSTED_ORIGINS
-        value: "https://sistema-chamados.onrender.com"
-      - key: DISABLE_COLLECTSTATIC
-        value: "0"
 
 databases:
   - name: sistema-chamados-db
-    databaseName: sistema_chamados_db
-    user: postgres
     plan: free
-    region: oregon
-    version: "15"
-    sslEnforcement: true
-    backupSchedule:
-      interval: daily
-      time: "02:00"
-      retention: 7
-    extensions:
-      - name: pgcrypto
-    maintenanceWindow:
-      dayOfWeek: sunday
-      startHour: 0
-      duration: 60
-    tags:
-      environment: production
-      project: sistema-chamados
