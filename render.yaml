@@ -3,11 +3,14 @@ services:
     name: software-autismo
     env: python
     buildCommand: |
+      cd frontend
+      npm install
+      npm run build
+      cd ..
       pip install -r backend/requirements.txt
-      python backend/manage.py collectstatic --noinput
-
-    startCommand: gunicorn backend.core.wsgi:application --pythonpath backend
-
+      cd backend
+      python manage.py collectstatic --noinput
+    startCommand: gunicorn core.wsgi:application --chdir backend
     envVars:
       - key: DEBUG
         value: False
