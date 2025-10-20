@@ -1,25 +1,18 @@
-# ============================================
-# render.yaml - Deploy completo Django + React
-# ============================================
-
 services:
   - type: web
-    name: projeto-tcc
+    name: sistema-chamados
     env: python
+    rootDir: backend
+
     buildCommand: |
-      # Instala o frontend (React) e gera o build
-      cd frontend
+      cd ../frontend
       npm install
       npm run build
-      cd ..
+      cd ../backend
+      pip install -r requirements.txt
+      python manage.py collectstatic --noinput
 
-      # Instala dependências do Django
-      pip install -r backend/requirements.txt
-
-      # Coleta os arquivos estáticos (do React + Django)
-      cd backend && python manage.py collectstatic --noinput
-
-    startCommand: cd backend && gunicorn core.wsgi:application
+    startCommand: gunicorn core.wsgi:application
 
     envVars:
       - key: DEBUG
@@ -28,13 +21,44 @@ services:
         generateValue: true
       - key: ALLOWED_HOSTS
         value: "*"
-      - key: CORS_ALLOWED_ORIGINS
-        value: "https://projeto-tcc.onrender.com"
-      - key: CSRF_TRUSTED_ORIGINS
-        value: "https://projeto-tcc.onrender.com"
+      - key: DATABASE_URL
+        fromDatabase:
+          name: sistema-chamados-db
+          property: connectionString
 
-    buildFilter:
-      paths:
-        - backend/**
-        - frontend/**
-        - render.yaml
+databases:
+  - name: sistema-chamados-db
+    databaseName: sistema_chamados_db
+    user: postgres
+    plan: free
+    region: oregon
+    version: "15"
+    extensions:
+      - name: pgcrypto
+    backupSchedule:
+      interval: daily
+      time: "02:00"
+      retention: 7
+    highAvailability: false
+    sslEnforcement: true
+    maintenanceWindow:
+      dayOfWeek: sunday
+      startHour: 0
+      duration: 60
+    autoMinorVersionUpgrade: true
+    requireClientCertificates: false
+    connectionPooler:
+      enabled: false
+      poolerType: pgbouncer
+      poolerPlan: hobby-dev
+    readReplicas:
+      enabled: false
+    followTheLeader:
+      enabled: false
+    dataEncryptionAtRest: false
+    dataEncryptionInTransit: true
+    performanceInsights:
+      enabled: false
+    tags:
+      environment: production
+      project: sistema-chamados
