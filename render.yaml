@@ -12,7 +12,10 @@ services:
       pip install -r requirements.txt
       python manage.py collectstatic --noinput
 
-    startCommand: gunicorn core.wsgi:application
+    startCommand: |
+      cd backend
+      export PYTHONPATH=$(pwd)
+      gunicorn core.wsgi:application --chdir backend --bind 0.0.0.0:$PORT
 
     envVars:
       - key: DEBUG
