@@ -1,4 +1,4 @@
-ï»¿import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Plus, Search } from "lucide-react";
 
@@ -36,7 +36,7 @@ export function PatientsPage() {
   const steps = [
     {
       title: "Dados principais",
-      description: "InformaÃ§Ãµes obrigatorias para identificar e contatar o paciente."
+      description: "Informações obrigatorias para identificar e contatar o paciente."
     },
     {
       title: "Contexto familiar e escolar",
@@ -80,7 +80,7 @@ export function PatientsPage() {
       );
     } catch (error) {
       console.error("Erro ao alterar status do paciente", error);
-      alert("NÃ£o foi possivel atualizar o status. Tente novamente.");
+      alert("Não foi possivel atualizar o status. Tente novamente.");
     } finally {
       setUpdatingStatusId(null);
     }
@@ -116,7 +116,7 @@ export function PatientsPage() {
       handleCloseModal();
     } catch (error) {
       console.error("Erro ao cadastrar paciente", error);
-      alert("NÃ£o foi possivel cadastrar o paciente. Verifique os dados.");
+      alert("Não foi possivel cadastrar o paciente. Verifique os dados.");
     } finally {
       setSaving(false);
     }
@@ -455,3 +455,4 @@ export function PatientsPage() {
     </div>
   );
 }
+

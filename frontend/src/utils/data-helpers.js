@@ -21,3 +21,14 @@ export function extractArray(payload, fallback = []) {
 }
 
 export const ensureArray = (value) => (Array.isArray(value) ? value : []);
+
+export const formatDate = (value, fallback = "Data nao informada") => {
+  if (!value) {
+    return fallback;
+  }
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) {
+    return fallback;
+  }
+  return date.toLocaleDateString("pt-BR");
+};

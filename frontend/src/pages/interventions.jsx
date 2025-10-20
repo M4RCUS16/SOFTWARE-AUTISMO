@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { ActivitySquare, CalendarPlus } from "lucide-react";
 
 import api from "@/services/api";
-import { extractArray, ensureArray } from "@/utils/data-helpers";
+import { extractArray, ensureArray, formatDate } from "@/utils/data-helpers";
 
 const sessionTypes = [
   { value: "psychological", label: "Sessao Psicologica" },
@@ -188,7 +188,7 @@ export function InterventionsPage() {
               <header className="flex flex-wrap items-center justify-between gap-2">
                 <p className="text-sm font-semibold text-slate-700">{session.session_type}</p>
                 <span className="rounded-full bg-primary/10 px-3 py-1 text-xs text-primary">
-                  {new Date(session.session_date).toLocaleDateString("pt-BR")} ? {session.duration_minutes} min
+                  {formatDate(session.session_date)} ? {session.duration_minutes ?? 0} min
                 </span>
               </header>
               <p className="mt-2 text-sm text-slate-600">{session.activities}</p>

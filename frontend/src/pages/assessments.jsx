@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { FilePlus2 } from "lucide-react";
 
 import api from "@/services/api";
-import { extractArray, ensureArray } from "@/utils/data-helpers";
+import { extractArray, ensureArray, formatDate } from "@/utils/data-helpers";
 
 const scales = [
   { value: "MCHAT", label: "M-CHAT" },
@@ -152,7 +152,7 @@ export function AssessmentsPage() {
                 <div className="flex flex-wrap items-center justify-between gap-4">
                   <div>
                     <p className="text-sm font-semibold text-slate-700">{assessment.scale}</p>
-                    <span className="text-xs text-slate-500">{new Date(assessment.application_date).toLocaleDateString("pt-BR")}</span>
+                    <span className="text-xs text-slate-500">{formatDate(assessment.application_date)}</span>
                   </div>
                   {assessment.score_total && (
                     <span className="rounded-full bg-primary/10 px-3 py-1 text-xs font-semibold text-primary">

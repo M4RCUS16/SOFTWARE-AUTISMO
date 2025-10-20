@@ -3,6 +3,7 @@ import { useParams } from "react-router-dom";
 import { Calendar, ClipboardList, FileText, HeartPulse, User } from "lucide-react";
 
 import api from "@/services/api";
+import { ensureArray, formatDate } from "@/utils/data-helpers";
 
 export function PatientDetailPage() {
   const { patientId } = useParams();
@@ -63,7 +64,7 @@ export function PatientDetailPage() {
         <div className="flex flex-col gap-3 text-sm text-slate-500 md:items-end">
           <div className="flex items-center gap-2">
             <Calendar className="h-4 w-4" />
-            <span>Nasc.: {new Date(patient.birth_date).toLocaleDateString("pt-BR")}</span>
+            <span>Nasc.: {formatDate(patient.birth_date)}</span>
           </div>
           <div className="flex items-center gap-3">
             <span
@@ -142,14 +143,14 @@ export function PatientDetailPage() {
             <h3 className="text-lg font-semibold text-slate-800">Avaliações aplicadas</h3>
           </header>
           <ul className="space-y-3 text-sm text-slate-600">
-            {patient.assessments?.map((assessment) => (
+            {ensureArray(patient.assessments).map((assessment) => (
               <li key={assessment.id} className="rounded-lg border border-slate-100 p-3">
                 <p className="font-semibold text-slate-700">{assessment.scale}</p>
-                <p className="text-xs text-slate-500">Aplicada em {new Date(assessment.application_date).toLocaleDateString("pt-BR")}</p>
+                <p className="text-xs text-slate-500">Aplicada em {formatDate(assessment.application_date)}</p>
                 {assessment.score_total && <p>Pontuacao: {assessment.score_total}</p>}
               </li>
             ))}
-            {!patient.assessments?.length && <p className="text-sm text-slate-500">Nenhuma avaliação registrada.</p>}
+            {ensureArray(patient.assessments).length === 0 && <p className="text-sm text-slate-500">Nenhuma avaliação registrada.</p>}
           </ul>
         </article>
         <article className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
@@ -158,14 +159,14 @@ export function PatientDetailPage() {
             <h3 className="text-lg font-semibold text-slate-800">Sessoes recentes</h3>
           </header>
           <ul className="space-y-3 text-sm text-slate-600">
-            {patient.sessions?.map((session) => (
+            {ensureArray(patient.sessions).map((session) => (
               <li key={session.id} className="rounded-lg border border-slate-100 p-3">
                 <p className="font-semibold text-slate-700">{session.session_type}</p>
-                <p className="text-xs text-slate-500">{new Date(session.session_date).toLocaleDateString("pt-BR")} ? {session.duration_minutes} min</p>
+                <p className="text-xs text-slate-500">{formatDate(session.session_date)} ? {session.duration_minutes ?? 0} min</p>
                 <p>{session.activities}</p>
               </li>
             ))}
-            {!patient.sessions?.length && <p className="text-sm text-slate-500">Nenhuma sessão registrada.</p>}
+            {ensureArray(patient.sessions).length === 0 && <p className="text-sm text-slate-500">Nenhuma sessão registrada.</p>}
           </ul>
         </article>
       </section>
@@ -179,25 +180,25 @@ export function PatientDetailPage() {
           <div>
             <h4 className="text-sm font-semibold text-slate-600">Relatorios gerais</h4>
             <ul className="mt-2 space-y-2 text-sm text-slate-600">
-              {patient.reports?.map((report) => (
+              {ensureArray(patient.reports).map((report) => (
                 <li key={report.id} className="rounded-lg border border-slate-100 p-3">
                   <p className="font-semibold text-slate-700">{report.report_type_display}</p>
-                  <span className="text-xs text-slate-400">Emitido em {new Date(report.generated_at).toLocaleDateString("pt-BR")}</span>
+                  <span className="text-xs text-slate-400">Emitido em {formatDate(report.generated_at)}</span>
                 </li>
               ))}
-              {!patient.reports?.length && <p className="text-sm text-slate-500">Nenhum relatório emitido.</p>}
+              {ensureArray(patient.reports).length === 0 && <p className="text-sm text-slate-500">Nenhum relatório emitido.</p>}
             </ul>
           </div>
           <div>
             <h4 className="text-sm font-semibold text-slate-600">Acoes com famílias</h4>
             <ul className="mt-2 space-y-2 text-sm text-slate-600">
-              {patient.family_sessions?.map((family) => (
+              {ensureArray(patient.family_sessions).map((family) => (
                 <li key={family.id} className="rounded-lg border border-slate-100 p-3">
                   <p className="font-semibold text-slate-700">{family.topic}</p>
-                  <span className="text-xs text-slate-400">Realizada em {new Date(family.session_date).toLocaleDateString("pt-BR")}</span>
+                  <span className="text-xs text-slate-400">Realizada em {formatDate(family.session_date)}</span>
                 </li>
               ))}
-              {!patient.family_sessions?.length && <p className="text-sm text-slate-500">Nenhuma acao registrada.</p>}
+              {ensureArray(patient.family_sessions).length === 0 && <p className="text-sm text-slate-500">Nenhuma acao registrada.</p>}
             </ul>
           </div>
         </div>
@@ -205,3 +206,17 @@ export function PatientDetailPage() {
     </div>
   );
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -188,7 +188,7 @@ export function ResourcesPage() {
             {ensureArray(familySessions).map((session) => (
               <div key={session.id} className="rounded-lg border border-slate-100 p-3">
                 <p className="font-semibold text-slate-700">{session.topic}</p>
-                <span className="text-xs text-slate-400">{session.session_date ? new Date(session.session_date).toLocaleDateString("pt-BR") : "Data nao informada"}</span>
+                <span className="text-xs text-slate-400">{formatDate(session.session_date)}</span>
                 <p className="mt-2">{session.activities}</p>
               </div>
             ))}
@@ -203,9 +203,7 @@ export function ResourcesPage() {
             {ensureArray(surveys).map((survey) => (
               <div key={survey.id} className="rounded-lg border border-slate-100 p-3">
                 <p className="font-semibold text-slate-700">Indice de adesao {survey.engagement_index ?? 0}%</p>
-                <span className="text-xs text-slate-400">
-                  {survey.conducted_at ? new Date(survey.conducted_at).toLocaleDateString("pt-BR") : "Data nao informada"}
-                </span>
+                <span className="text-xs text-slate-400">{formatDate(survey.conducted_at)}</span>
                 <p className="mt-2">{survey.notes || "Sem observacoes"}</p>
               </div>
             ))}
@@ -218,4 +216,3 @@ export function ResourcesPage() {
     </div>
   );
 }
-

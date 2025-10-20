@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { FileText, Printer } from 'lucide-react';
 
 import api from '@/services/api';
-import { extractArray, ensureArray } from '@/utils/data-helpers';
+import { extractArray, ensureArray, formatDate } from '@/utils/data-helpers';
 
 const reportTypes = [
   { value: 'technical', label: 'Relatorio Geral' },
@@ -125,7 +125,7 @@ export function ReportsPage() {
               <div className='flex flex-wrap items-center justify-between gap-3'>
                 <div>
                   <p className='text-sm font-semibold text-slate-700'>{report.report_type_display}</p>
-                  <span className='text-xs text-slate-400'>{new Date(report.generated_at).toLocaleDateString('pt-BR')}</span>
+                <span className='text-xs text-slate-400'>{formatDate(report.generated_at)}</span>
                 </div>
                 <span className='text-xs text-slate-500'>{report.summary}</span>
               </div>
