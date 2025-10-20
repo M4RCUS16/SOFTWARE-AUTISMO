@@ -24,3 +24,10 @@ urlpatterns = [
     path('api/docs/', SpectacularSwaggerView.as_view(url_name='schema'), name='swagger-ui'),
     path('api/', include('clinical.urls')),
 ]
+
+from django.views.generic import TemplateView
+from django.urls import re_path
+
+urlpatterns += [
+    re_path(r'^.*$', TemplateView.as_view(template_name='index.html')),
+]
