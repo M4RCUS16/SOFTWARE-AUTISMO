@@ -2,20 +2,17 @@ services:
   - type: web
     name: sistema-chamados
     env: python
-    rootDir: backend
 
     buildCommand: |
-      cd ../frontend
+      cd frontend
       npm install
       npm run build
-      cd ../backend
-      pip install -r requirements.txt
+      cd ..
+      pip install -r backend/requirements.txt
+      cd backend
       python manage.py collectstatic --noinput
 
-    startCommand: |
-      cd backend
-      export PYTHONPATH=$(pwd)
-      gunicorn core.wsgi:application --chdir backend --bind 0.0.0.0:$PORT
+    startCommand: gunicorn backend.core.wsgi:application --chdir backend
 
     envVars:
       - key: DEBUG
