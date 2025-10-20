@@ -18,10 +18,11 @@ services:
       # Instala dependências do Django
       pip install -r requirements.txt
 
-      # Coleta arquivos estáticos (inclui o build do React)
+      # Coleta arquivos estáticos
       python manage.py collectstatic --noinput
 
-    startCommand: gunicorn core.wsgi:application --chdir backend
+    # O Gunicorn agora sabe o caminho completo do módulo
+    startCommand: gunicorn backend.core.wsgi:application
 
     envVars:
       - key: DEBUG
