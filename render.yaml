@@ -1,0 +1,39 @@
+# ============================================
+# render.yaml - Deploy completo Django + React
+# ============================================
+
+services:
+  - type: web
+    name: projeto-tcc
+    env: python
+    buildCommand: |
+      # Instala o frontend (React) e gera o build
+      cd frontend
+      npm install
+      npm run build
+      cd ..
+
+      # Instala dependências do Django
+      pip install -r backend/requirements.txt
+
+      # Coleta os arquivos estáticos (do React + Django)
+      python backend/manage.py collectstatic --noinput
+    startCommand: gunicorn core.wsgi:application
+
+    envVars:
+      - key: DEBUG
+        value: False
+      - key: SECRET_KEY
+        generateValue: true
+      - key: ALLOWED_HOSTS
+        value: "*"
+      - key: CORS_ALLOWED_ORIGINS
+        value: "https://projeto-tcc.onrender.com"
+      - key: CSRF_TRUSTED_ORIGINS
+        value: "https://projeto-tcc.onrender.com"
+
+    buildFilter:
+      paths:
+        - backend/**
+        - frontend/**
+        - render.yaml
