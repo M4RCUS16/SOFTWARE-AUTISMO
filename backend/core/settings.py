@@ -18,6 +18,7 @@ env = environ.Env(
     DEFAULT_FROM_EMAIL=(str, 'noreply@teacare.local'),
 )
 
+# Lê o arquivo .env (um nível acima da pasta backend)
 environ.Env.read_env(BASE_DIR.parent / '.env')
 
 # ============================================
@@ -76,7 +77,7 @@ WSGI_APPLICATION = 'core.wsgi.application'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(BASE_DIR.parent, 'frontend', 'dist')],  # index.html está aqui
+        'DIRS': [os.path.join(BASE_DIR.parent, 'frontend', 'dist')],  # Caminho para o index.html do React
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -134,7 +135,7 @@ USE_TZ = True
 STATIC_URL = '/static/'
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 
-# Webpack gera tudo em /frontend/dist/
+# O Webpack coloca tudo em /frontend/dist/
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR.parent, 'frontend', 'dist'),
 ]
