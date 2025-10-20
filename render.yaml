@@ -7,7 +7,7 @@ services:
     name: projeto-tcc
     env: python
     buildCommand: |
-      # Build do frontend (React)
+      # Instala o frontend (React) e gera o build
       cd frontend
       npm install
       npm run build
@@ -16,14 +16,13 @@ services:
       # Instala dependências do Django
       pip install -r backend/requirements.txt
 
-      # Coleta arquivos estáticos
-      python backend/manage.py collectstatic --noinput
+      # Coleta os arquivos estáticos (do React + Django)
+      cd backend
+      python manage.py collectstatic --noinput
 
-    startCommand: gunicorn core.wsgi:application
+    startCommand: cd backend && gunicorn core.wsgi:application
 
     envVars:
-      - key: PYTHON_VERSION
-        value: 3.12.5
       - key: DEBUG
         value: False
       - key: SECRET_KEY
@@ -34,8 +33,6 @@ services:
         value: "https://projeto-tcc.onrender.com"
       - key: CSRF_TRUSTED_ORIGINS
         value: "https://projeto-tcc.onrender.com"
-      - key: DJANGO_SETTINGS_MODULE
-        value: backend.core.settings
 
     buildFilter:
       paths:
