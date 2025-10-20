@@ -2,9 +2,11 @@ services:
   - type: web
     name: software-autismo
     env: python
+
     buildCommand: |
       pip install -r backend/requirements.txt
       python backend/manage.py collectstatic --noinput
+
     startCommand: gunicorn core.wsgi:application --chdir backend
 
     envVars:
