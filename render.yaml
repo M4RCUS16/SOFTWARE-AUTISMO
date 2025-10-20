@@ -17,8 +17,7 @@ services:
       pip install -r backend/requirements.txt
 
       # Coleta os arquivos estáticos (do React + Django)
-      cd backend
-      python manage.py collectstatic --noinput
+      cd backend && python manage.py collectstatic --noinput
 
     startCommand: cd backend && gunicorn core.wsgi:application
 
