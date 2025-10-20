@@ -183,7 +183,7 @@ export function InterventionsPage() {
       <section className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
         <h3 className="text-lg font-semibold text-slate-800">Sessoes registradas</h3>
         <div className="mt-4 space-y-3">
-          {sessions.map((session) => (
+          {ensureArray(sessions).map((session) => (
             <article key={session.id} className="rounded-lg border border-slate-100 p-4">
               <header className="flex flex-wrap items-center justify-between gap-2">
                 <p className="text-sm font-semibold text-slate-700">{session.session_type}</p>
@@ -195,9 +195,11 @@ export function InterventionsPage() {
               {session.behaviour_observations && <p className="mt-1 text-xs text-slate-500">{session.behaviour_observations}</p>}
             </article>
           ))}
-          {!sessions.length && <p className="text-sm text-slate-500">Nenhuma sessão cadastrada para este paciente.</p>}
+          {ensureArray(sessions).length === 0 && <p className="text-sm text-slate-500">Nenhuma sessão cadastrada para este paciente.</p>}
         </div>
       </section>
     </div>
   );
 }
+
+

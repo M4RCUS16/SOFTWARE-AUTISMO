@@ -147,7 +147,7 @@ export function AssessmentsPage() {
           <p className="text-sm text-slate-500">Carregando histórico...</p>
         ) : (
           <div className="space-y-3">
-            {assessments.map((assessment) => (
+            {ensureArray(assessments).map((assessment) => (
               <article key={assessment.id} className="rounded-lg border border-slate-100 p-4">
                 <div className="flex flex-wrap items-center justify-between gap-4">
                   <div>
@@ -163,10 +163,11 @@ export function AssessmentsPage() {
                 {assessment.interpretation && <p className="mt-2 text-sm text-slate-600">{assessment.interpretation}</p>}
               </article>
             ))}
-            {!assessments.length && <p className="text-sm text-slate-500">Nenhuma avaliação cadastrada para este paciente.</p>}
+            {ensureArray(assessments).length === 0 && <p className="text-sm text-slate-500">Nenhuma avaliação cadastrada para este paciente.</p>}
           </div>
         )}
       </section>
     </div>
   );
 }
+
